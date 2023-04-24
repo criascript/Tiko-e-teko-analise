@@ -108,7 +108,7 @@ class TikTokUser:
         return self.data
 
 @app.get('/{username}')
-def sracpy_user(username: str):
+def get_user_data(username: str):
    username = username
    user = TikTokUser(username)
    return user.get_data()
