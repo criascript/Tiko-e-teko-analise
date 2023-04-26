@@ -67,19 +67,11 @@ class TikTokUser:
             raise error
 
         soup: BeautifulSoup = BeautifulSoup(response.text, 'html.parser')
-        user_panel: list[BeautifulSoup] = soup.find_all('h3')
-        info_panel: str = user_panel[0].text.strip()
 
         # Support integer, K and M
-        following = re.search(r'(\d+(\.\d+)?)([KM]?)Following', info_panel)
-        following: int = int(self.parse_count(following.group(0)[:-9]) if following else 0)
-
-        followers = re.search(r'(\d+(\.\d+)?)([KM]?)Followers', info_panel)
-        followers: int = int(self.parse_count(followers.group(0)[:-9]) if followers else 0)
-
-        likes = re.search(r'(\d+(\.\d+)?)([KM]?)Likes', info_panel)
-        likes: int = int(self.parse_count(likes.group(0)[:-5]) if likes else 0)
-
+        following = int(self.parse_count(soup.find('strong', {'data-e2e': 'following-count'}).text))
+        followers = int(self.parse_count(soup.find('strong', {'data-e2e': 'followers-count'}).text))
+        likes =  int(self.parse_count(soup.find('strong', {'data-e2e': 'likes-count'}).text))
         views: list[BeautifulSoup] = soup.find_all('strong', {'class': 'video-count', 'data-e2e': 'video-views'})
         views_values: list[int] = [ int(self.parse_count(view.text)) for view in views]
 
@@ -109,7 +101,6 @@ class TikTokUser:
 
 @app.get('/{username}')
 def get_user_data(username: str):
-   username = username
    user = TikTokUser(username)
    return user.get_data()
 
