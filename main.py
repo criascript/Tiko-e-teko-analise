@@ -101,6 +101,9 @@ class TikTokUser:
 
 @app.get('/{username}')
 def get_user_data(username: str):
+   """
+   Get the user assingment in the url and call method TikTokUser to scrapy her info's and return in Json to the WebAPI
+   """
    user = TikTokUser(username)
    return user.get_data()
 
